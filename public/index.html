@@ -43,7 +43,7 @@
         <span class="field-hint">A–Z and spaces. Use / for a new line.</span>
       </label>
 
-      <div class="group" aria-label="Suggestions">
+      <div class="group" role="group" aria-label="Suggestions">
         <span class="group-label">Try</span>
         <div class="chips">
           <button type="button" class="chip chip-soft" data-suggest="GM">GM</button>
@@ -56,16 +56,17 @@
       </div>
 
       <div class="row">
-        <div class="group" role="radiogroup" aria-label="Format">
+        <div class="group" role="group" aria-label="Format" aria-describedby="format-hint">
           <span class="group-label">Format</span>
           <div class="chips">
             <button type="button" class="chip is-on" data-format="square">1:1</button>
             <button type="button" class="chip" data-format="wide">16:9</button>
-            <button type="button" class="chip" data-format="story" title="Stories and Reels">9:16</button>
-            <button type="button" class="chip" data-format="banner" title="X header">3:1</button>
+            <button type="button" class="chip" data-format="story">9:16</button>
+            <button type="button" class="chip" data-format="banner">3:1</button>
+            <span class="field-hint" id="format-hint">9:16 for stories, 3:1 for an X header.</span>
           </div>
         </div>
-        <div class="group" role="radiogroup" aria-label="Surface">
+        <div class="group" role="group" aria-label="Surface">
           <span class="group-label">Surface</span>
           <div class="chips">
             <button type="button" class="swatch is-on" data-bg="paper" style="--sw:#ecebe7" aria-label="Paper"></button>

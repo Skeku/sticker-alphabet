@@ -140,6 +140,7 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
 .group { display: grid; grid-template-columns: 58px 1fr; align-items: start; gap: 8px; }
 .group-label { padding-top: 7px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.chips .field-hint { flex-basis: 100%; }
 
 .chip {
   font: 700 13px "Archivo", sans-serif;
@@ -173,11 +174,9 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
 
 .status {
   margin: 0;
-  min-height: 1.4em;
   font-size: 13px;
   color: var(--ink);
 }
-.status:empty { display: none; }
 
 .btn {
   font: 700 15px "Archivo", sans-serif;
