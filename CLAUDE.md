@@ -7,7 +7,7 @@ Mini web app para componer palabras con un alfabeto de pegatinas de fruta (PLU l
 ## Stack
 - Estático, sin framework: `public/index.html`, `public/app.js`, `public/style.css`.
 - Render en Canvas 2D: sombras por canal alfa (contacto + ambiente), rotación/solape aleatorios, exportación PNG.
-- 3 variantes por letra (A-Z), elegidas al azar: `public/stickers/{LETTER}{1-3}.webp`.
+- 3 variantes por letra (A-Z), elegidas al azar: `public/stickers/{LETTER}{1-3}.webp`. Las letras de `FRUIT_LETTERS` (CDJOQSUVXY) tienen una 4ª con forma de fruta (`{LETTER}4.webp`).
 
 ## Assets
 - Generados con Magnific (GPT 2.5, fondo transparente), proyecto "Sticker Alphabet".

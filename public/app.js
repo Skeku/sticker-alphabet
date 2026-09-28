@@ -1,5 +1,8 @@
 // Sticker Alphabet: composes words with fruit-sticker letters on a Canvas 2D stage.
 const VARIANTS = 3;
+// Letters with a 4th, fruit-shaped variant (O = orange, J = banana...).
+const FRUIT_LETTERS = 'CDJOQSUVXY';
+const variantCount = (letter) => VARIANTS + (FRUIT_LETTERS.includes(letter) ? 1 : 0);
 const FORMATS = {
   square: { w: 2160, h: 2160 },
   wide: { w: 2400, h: 1350 },
@@ -226,7 +229,7 @@ async function render() {
   loadingEl.hidden = false;
   const aspects = {};
   await Promise.all(letters.flatMap((L) =>
-    Array.from({ length: VARIANTS }, async (_, v) => {
+    Array.from({ length: variantCount(L) }, async (_, v) => {
       const img = await loadImage(stickerSrc(L, v));
       if (img) aspects[`${L}${v}`] = img.naturalWidth / img.naturalHeight;
     })
@@ -235,7 +238,7 @@ async function render() {
   loadingEl.hidden = true;
 
   const avgAspect = (L) => {
-    const vals = [0, 1, 2].map((v) => aspects[`${L}${v}`]).filter(Boolean);
+    const vals = Array.from({ length: variantCount(L) }, (_, v) => aspects[`${L}${v}`]).filter(Boolean);
     return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0.8;
   };
 
@@ -254,7 +257,7 @@ async function render() {
     let gap = false;
     for (const ch of line) {
       if (ch === ' ') { gap = true; continue; }
-      const variant = Math.floor(rnd() * VARIANTS);
+      const variant = Math.floor(rnd() * variantCount(ch));
       items.push({
         letter: ch,
         variant,
