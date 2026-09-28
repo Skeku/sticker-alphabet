@@ -188,6 +188,23 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
   padding: 8px 20px 28px;
   font-size: 12px;
   color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 16px;
+}
+
+.foot a {
+  color: var(--ink);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+
+.foot a:hover,
+.foot a:focus-visible {
+  text-decoration-color: currentColor;
 }
 
 @media (max-width: 820px) {
