@@ -7,7 +7,14 @@
   <meta name="description" content="Type a word, get it spelled out in fruit stickers. Download it and share it.">
   <meta property="og:title" content="Sticker Alphabet">
   <meta property="og:description" content="Type a word, get it spelled out in fruit stickers.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://sticker-alphabet.netlify.app/">
+  <meta property="og:image" content="https://sticker-alphabet.netlify.app/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The words Sticker Alphabet spelled out in colorful fruit stickers">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://sticker-alphabet.netlify.app/og.jpg">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><ellipse cx='32' cy='34' rx='26' ry='22' fill='%23f2c230' stroke='%23161616' stroke-width='5'/><text x='32' y='44' font-family='Arial Black,Arial' font-weight='900' font-size='28' text-anchor='middle' fill='%23161616'>A</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,26 +43,47 @@
         <span class="field-hint">A–Z and spaces. Use / for a new line.</span>
       </label>
 
+      <div class="group" aria-label="Suggestions">
+        <span class="group-label">Try</span>
+        <div class="chips">
+          <button type="button" class="chip chip-soft" data-suggest="GM">GM</button>
+          <button type="button" class="chip chip-soft" data-suggest="SHIP IT">SHIP IT</button>
+          <button type="button" class="chip chip-soft" data-suggest="LFG">LFG</button>
+          <button type="button" class="chip chip-soft" data-suggest="JUICY">JUICY</button>
+          <button type="button" class="chip chip-soft" data-suggest="HELLO WORLD">HELLO WORLD</button>
+          <button type="button" class="chip chip-soft" data-suggest="HAPPY / BIRTHDAY">HAPPY BIRTHDAY</button>
+        </div>
+      </div>
+
       <div class="row">
         <div class="group" role="radiogroup" aria-label="Format">
           <span class="group-label">Format</span>
-          <button type="button" class="chip is-on" data-format="square">1:1</button>
-          <button type="button" class="chip" data-format="wide">16:9</button>
+          <div class="chips">
+            <button type="button" class="chip is-on" data-format="square">1:1</button>
+            <button type="button" class="chip" data-format="wide">16:9</button>
+            <button type="button" class="chip" data-format="story" title="Stories and Reels">9:16</button>
+            <button type="button" class="chip" data-format="banner" title="X header">3:1</button>
+          </div>
         </div>
         <div class="group" role="radiogroup" aria-label="Surface">
           <span class="group-label">Surface</span>
-          <button type="button" class="swatch is-on" data-bg="paper" style="--sw:#ecebe7" aria-label="Paper"></button>
-          <button type="button" class="swatch" data-bg="kraft" style="--sw:#c9a77c" aria-label="Kraft"></button>
-          <button type="button" class="swatch" data-bg="mint" style="--sw:#cfe3d6" aria-label="Mint"></button>
-          <button type="button" class="swatch" data-bg="ink" style="--sw:#1d1d1f" aria-label="Ink"></button>
+          <div class="chips">
+            <button type="button" class="swatch is-on" data-bg="paper" style="--sw:#ecebe7" aria-label="Paper"></button>
+            <button type="button" class="swatch" data-bg="kraft" style="--sw:#c9a77c" aria-label="Kraft"></button>
+            <button type="button" class="swatch" data-bg="mint" style="--sw:#cfe3d6" aria-label="Mint"></button>
+            <button type="button" class="swatch" data-bg="ink" style="--sw:#1d1d1f" aria-label="Ink"></button>
+          </div>
         </div>
       </div>
 
       <div class="actions">
-        <button type="button" class="btn" id="shuffle">Shuffle stickers</button>
+        <button type="button" class="btn btn-wide" id="shuffle">Shuffle stickers</button>
         <button type="button" class="btn btn-primary" id="download">Download PNG</button>
+        <button type="button" class="btn" id="video">Save video</button>
+        <button type="button" class="btn" id="copy">Copy image</button>
         <button type="button" class="btn" id="share">Share</button>
       </div>
+      <p class="status" id="status" role="status" aria-live="polite"></p>
     </form>
   </main>
 

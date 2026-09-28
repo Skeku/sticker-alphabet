@@ -10,8 +10,10 @@ Inspired by [this photo by @rare_jpg](https://x.com/rare_jpg/status/210422556664
 
 - A–Z and spaces, up to 40 characters. Use `/` to force a line break.
 - Three sticker variants per letter, picked at random, plus a fourth one where the letter's shape suggests a fruit: C bitten apple, D half lemon, J banana, O orange, Q apple with its stem as the tail, S orange-peel spiral, U melon slice, V watermelon wedge, X crossed bananas, Y cherries. **Shuffle** re-rolls them.
-- 1:1 (2160×2160) and 16:9 (2400×1350) formats, four surfaces: paper, kraft, mint and ink.
-- **Download PNG** exports at full resolution. **Share** uses the native share sheet with the image where available, and falls back to a post on X.
+- Quick suggestions (GM, SHIP IT, LFG…) to get started in one tap.
+- About 1 in 40 letters comes out as a **holographic foil** sticker, drawn on the canvas with no extra assets.
+- Four formats: 1:1 (2160×2160), 16:9 (2400×1350), 9:16 for stories (1350×2400) and 3:1 for an X header (3000×1000). Four surfaces: paper, kraft, mint and ink.
+- **Download PNG** exports at full resolution. **Save video** records the stickers slapping down one by one as an MP4 (WebM in browsers that can't record MP4), right in the browser. **Copy image** puts the PNG on the clipboard. **Share** uses the native share sheet with the image where available, and falls back to a post on X.
 - The whole composition lives in the URL (`?t=HELLO&s=123&f=square&b=paper`), so any result can be linked and reproduced.
 
 ## How it works

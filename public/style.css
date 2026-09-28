@@ -76,13 +76,16 @@ h1 {
 
 .stage {
   position: relative;
+  justify-self: center;
+  max-width: 100%;
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 18px 40px -24px rgba(40,30,10,.35);
   background: #ecebe7;
 }
 
-canvas { display: block; width: 100%; height: auto; }
+/* Width and height stay auto so tall formats (9:16) fit the viewport without distorting. */
+canvas { display: block; width: auto; height: auto; max-width: 100%; max-height: min(78dvh, 1000px); }
 
 .loading {
   position: absolute;
@@ -134,8 +137,9 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
 
 .row { display: flex; flex-direction: column; gap: 14px; }
 
-.group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.group-label { width: 64px; }
+.group { display: grid; grid-template-columns: 58px 1fr; align-items: start; gap: 8px; }
+.group-label { padding-top: 7px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px 8px; }
 
 .chip {
   font: 700 13px "Archivo", sans-serif;
@@ -143,10 +147,13 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
   background: transparent;
   color: var(--ink);
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 6px 11px;
   cursor: pointer;
 }
 .chip.is-on { background: var(--ink); color: #fff; }
+.chip-soft { border-style: dashed; font-size: 12px; padding: 5px 10px; }
+.chip-soft:hover { border-style: solid; background: #fff; }
+.chip:active { transform: scale(0.97); }
 
 .swatch {
   width: 28px;
@@ -159,7 +166,18 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
 }
 .swatch.is-on { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-.actions { display: flex; flex-direction: column; gap: 8px; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.actions .btn { font-size: 14px; padding: 11px 8px; }
+.actions .btn-wide { grid-column: 1 / -1; font-size: 15px; }
+.actions .btn:disabled { opacity: .6; cursor: progress; transform: none; box-shadow: 0 3px 0 var(--ink); }
+
+.status {
+  margin: 0;
+  min-height: 1.4em;
+  font-size: 13px;
+  color: var(--ink);
+}
+.status:empty { display: none; }
 
 .btn {
   font: 700 15px "Archivo", sans-serif;
