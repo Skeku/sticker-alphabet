@@ -2,6 +2,12 @@
   command = "npm run build"
   publish = "public"
 
+# Link-preview images per word (netlify/functions/og.mjs) render with sharp from the committed stickers.
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["sharp"]
+  included_files = ["public/stickers/*.webp"]
+
 [[headers]]
   for = "/stickers/*"
   [headers.values]

@@ -172,6 +172,16 @@ input[type="text"]:focus { box-shadow: 0 0 0 4px rgba(242,194,48,.55); }
 .actions .btn-wide { grid-column: 1 / -1; font-size: 15px; }
 .actions .btn:disabled { opacity: .6; cursor: progress; transform: none; box-shadow: 0 3px 0 var(--ink); }
 
+.check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.check input { width: 18px; height: 18px; margin: 0; accent-color: var(--ink); }
+
 .status {
   margin: 0;
   font-size: 13px;

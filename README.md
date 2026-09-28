@@ -14,6 +14,8 @@ Inspired by [this photo by @rare_jpg](https://x.com/rare_jpg/status/210422556664
 - About 1 in 40 letters comes out as a **holographic foil** sticker, drawn on the canvas with no extra assets.
 - Four formats: 1:1 (2160×2160), 16:9 (2400×1350), 9:16 for stories (1350×2400) and 3:1 for an X header (3000×1000). Four surfaces: paper, kraft, mint and ink.
 - **Download PNG** exports at full resolution. **Save video** records the stickers slapping down one by one as an MP4 (WebM in browsers that can't record MP4), right in the browser. **Copy image** puts the PNG on the clipboard. **Share** uses the native share sheet with the image where available, and falls back to a post on X.
+- Exports carry a small site credit in the corner, which you can switch off.
+- Shared links get a preview card of that exact word: an edge function (`netlify/edge-functions/og-meta.js`) points `og:image` at `/og`, a function (`netlify/functions/og.mjs`) that renders it with `sharp` using the same layout as the app (`public/layout.js`). Each preview is rendered once and then cached on the CDN.
 - The whole composition lives in the URL (`?t=HELLO&s=123&f=square&b=paper`), so any result can be linked and reproduced.
 
 ## How it works
@@ -30,7 +32,7 @@ Plain HTML, CSS and JavaScript, no framework. Everything is drawn on a 2D canvas
 python3 -m http.server 5173 -d public
 ```
 
-Then open http://localhost:5173. The processed stickers are committed in `public/stickers/`, so no build step is needed.
+Then open http://localhost:5173. The processed stickers are committed in `public/stickers/`, so no build step is needed. The link-preview functions only run on Netlify (or with `netlify dev`).
 
 ## Stickers
 

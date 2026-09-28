@@ -1,28 +1,11 @@
 // Sticker Alphabet: composes words with fruit-sticker letters on a Canvas 2D stage.
-const VARIANTS = 3;
-// Letters with a 4th, fruit-shaped variant (O = orange, J = banana...).
-const FRUIT_LETTERS = 'CDJOQSUVXY';
-const variantCount = (letter) => VARIANTS + (FRUIT_LETTERS.includes(letter) ? 1 : 0);
-// maxLetter: max letter height vs canvas height.
-const FORMATS = {
-  square: { w: 2160, h: 2160, maxLetter: 0.34 },
-  wide: { w: 2400, h: 1350, maxLetter: 0.34 },
-  banner: { w: 3000, h: 1000, maxLetter: 0.62 },
-  story: { w: 1350, h: 2400, maxLetter: 0.3 },
-};
-// Holographic foil: rare, rolled per letter from its own RNG so it never shifts the layout of existing links.
-const HOLO_CHANCE = 1 / 40;
+import { FORMATS, variantCount, sanitize, stickerSrc, layoutScene, mulberry32 } from './layout.js';
+
 const SURFACES = {
   paper: { base: '#ecebe7', shadow: '40, 32, 20' },
   kraft: { base: '#c9a77c', shadow: '60, 36, 12' },
   mint: { base: '#cfe3d6', shadow: '20, 45, 35' },
   ink: { base: '#1d1d1f', shadow: '0, 0, 0' },
-};
-const LAYOUT = {
-  overlap: 0.9,        // advance = sticker width * overlap
-  spaceWidth: 0.42,    // word gap, in letter-height units
-  lineGap: 0.12,       // extra gap between lines, in letter-height units
-  padding: 0.1,        // canvas padding, fraction of the shortest side
 };
 
 const canvas = document.getElementById('canvas');
@@ -36,6 +19,7 @@ const state = {
   seed: randomSeed(),
   format: 'square',
   surface: 'paper',
+  credit: true,
 };
 
 const imageCache = new Map();
@@ -49,18 +33,7 @@ function randomSeed() {
   return Math.floor(Math.random() * 1e9);
 }
 
-function mulberry32(a) {
-  return function () {
-    a |= 0; a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
-function sanitize(text) {
-  return text.toUpperCase().replace(/[^A-Z /]/g, '').replace(/ {2,}/g, ' ').slice(0, 40);
-}
 
 function loadImage(src) {
   if (imageCache.has(src)) return imageCache.get(src);
@@ -75,9 +48,6 @@ function loadImage(src) {
   return p;
 }
 
-function stickerSrc(letter, variant) {
-  return `stickers/${letter}${variant + 1}.webp`;
-}
 
 function makeGrain() {
   const size = 256;
@@ -96,56 +66,7 @@ function makeGrain() {
 }
 
 // ---------- layout ----------
-function measure(lines) {
-  // Recompute x positions with real aspect ratios.
-  let maxWidth = 0;
-  for (const items of lines) {
-    let x = 0;
-    let prev = null;
-    for (const it of items) {
-      if (prev && it.gapBefore) x += LAYOUT.spaceWidth;
-      it.x = x;
-      x += it.aspect * it.scale * LAYOUT.overlap;
-      prev = it;
-    }
-    const last = items[items.length - 1];
-    const width = last ? last.x + last.aspect * last.scale : 0;
-    items.width = width;
-    maxWidth = Math.max(maxWidth, width);
-  }
-  return maxWidth;
-}
 
-// Chooses line breaks: explicit "/" first, then greedy word wrap to best fill the canvas.
-function chooseLines(text, aspectOf, canvasW, canvasH) {
-  const explicit = text.split('/').map((s) => s.trim()).filter(Boolean);
-  const words = explicit.map((l) => l.split(' ').filter(Boolean));
-  const approxWidth = (ws) =>
-    ws.reduce((sum, w) => sum + [...w].reduce((s, ch) => s + aspectOf(ch) * LAYOUT.overlap, 0), 0) +
-    Math.max(0, ws.length - 1) * LAYOUT.spaceWidth;
-
-  let best = null;
-  const totalWords = words.reduce((n, ws) => n + ws.length, 0);
-  for (let maxLines = words.length; maxLines <= Math.max(words.length, totalWords); maxLines++) {
-    const lines = [];
-    for (const ws of words) {
-      // Split each explicit line into roughly balanced chunks.
-      const share = Math.max(1, Math.round((maxLines * ws.length) / totalWords));
-      const target = approxWidth(ws) / share;
-      let cur = [];
-      for (const w of ws) {
-        if (cur.length && approxWidth([...cur, w]) > target * 1.15) { lines.push(cur); cur = []; }
-        cur.push(w);
-      }
-      if (cur.length) lines.push(cur);
-    }
-    const width = Math.max(...lines.map(approxWidth));
-    const height = lines.length + (lines.length - 1) * LAYOUT.lineGap;
-    const s = Math.min(canvasW / width, canvasH / height);
-    if (!best || s > best.s * 1.02) best = { s, lines: lines.map((ws) => ws.join(' ')) };
-  }
-  return best ? best.lines : [];
-}
 
 // ---------- render ----------
 function drawBackground(g, W, H) {
@@ -300,7 +221,21 @@ function paint(g, k, t = null, sc = scene) {
     });
   });
   drawLightPass(g, W, H);
+  if (state.credit) drawCredit(g, W, H);
   g.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+// Small site credit in the bottom-right corner, so shared images point back here.
+function drawCredit(g, W, H) {
+  const size = Math.round(Math.min(W, H) * 0.024);
+  const dark = state.surface === 'ink';
+  g.save();
+  g.font = `700 ${size}px Archivo, system-ui, sans-serif`;
+  g.textAlign = 'right';
+  g.textBaseline = 'alphabetic';
+  g.fillStyle = dark ? 'rgba(255,255,255,0.45)' : 'rgba(22,22,22,0.42)';
+  g.fillText('sticker-alphabet.netlify.app', W - size * 1.4, H - size * 1.4);
+  g.restore();
 }
 
 function easeOutBack(x) {
@@ -326,64 +261,8 @@ async function render() {
   if (token !== renderToken) return;
   loadingEl.hidden = true;
 
-  const avgAspect = (L) => {
-    const vals = Array.from({ length: variantCount(L) }, (_, v) => aspects[`${L}${v}`]).filter(Boolean);
-    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0.8;
-  };
+  const { unit, drawList } = layoutScene({ text, seed: state.seed, ...FORMATS[state.format], aspects });
 
-  const pad = Math.min(W, H) * LAYOUT.padding;
-  const innerW = W - pad * 2;
-  const innerH = H - pad * 2;
-
-  const lineTexts = chooseLines(text, avgAspect, innerW, innerH);
-  const rnd = mulberry32(state.seed);
-  const holoRnd = mulberry32(state.seed ^ 0x5eed5);
-  const lines = lineTexts.map((line) => {
-    const items = [];
-    let gap = false;
-    for (const ch of line) {
-      if (ch === ' ') { gap = true; continue; }
-      const variant = Math.floor(rnd() * variantCount(ch));
-      items.push({
-        letter: ch,
-        variant,
-        aspect: aspects[`${ch}${variant}`] || 0.8,
-        rot: (rnd() - 0.5) * 0.2,
-        dy: (rnd() - 0.5) * 0.08,
-        scale: 0.94 + rnd() * 0.1,
-        z: rnd(),
-        holo: holoRnd() < HOLO_CHANCE,
-        gapBefore: gap,
-      });
-      gap = false;
-    }
-    return items;
-  }).filter((items) => items.length);
-
-  const maxWidth = measure(lines);
-  const totalHeight = lines.length + (lines.length - 1) * LAYOUT.lineGap;
-  const unit = Math.min(innerW / maxWidth, innerH / totalHeight, H * FORMATS[state.format].maxLetter);
-
-  const blockH = totalHeight * unit;
-  const top = (H - blockH) / 2;
-  const drawList = [];
-  lines.forEach((items, li) => {
-    const left = (W - items.width * unit) / 2;
-    const lineTop = top + li * (1 + LAYOUT.lineGap) * unit;
-    for (const it of items) {
-      const h = unit * it.scale;
-      const w = h * it.aspect;
-      drawList.push({
-        it,
-        order: drawList.length, // reading order, for the video
-        cx: left + it.x * unit + w / 2,
-        cy: lineTop + unit / 2 + it.dy * unit,
-        w, h,
-      });
-    }
-  });
-
-  drawList.sort((a, b) => a.it.z - b.it.z);
   for (const d of drawList) {
     d.img = await loadImage(stickerSrc(d.it.letter, d.it.variant));
     if (token !== renderToken) return;
@@ -394,6 +273,10 @@ async function render() {
   const anim = { drop: 0.34, hold: 1.8, start: (order) => 0.25 + order * stagger };
   anim.total = anim.start(Math.max(0, n - 1)) + anim.drop + anim.hold;
   scene = { W, H, unit, drawList: drawList.filter((d) => d.img), anim };
+
+  // The credit is drawn with Archivo; make sure it's loaded so the first frame doesn't use a fallback.
+  if (document.fonts) await document.fonts.load('700 40px Archivo').catch(() => {});
+  if (token !== renderToken) return;
 
   canvas.width = W;
   canvas.height = H;
@@ -553,6 +436,10 @@ function bind() {
   document.getElementById('shuffle').addEventListener('click', () => { state.seed = randomSeed(); render(); });
   document.getElementById('download').addEventListener('click', download);
   document.getElementById('share').addEventListener('click', share);
+  document.getElementById('credit').addEventListener('change', (e) => {
+    state.credit = e.target.checked;
+    paint(ctx, 1);
+  });
   const copyBtn = document.getElementById('copy');
   if (window.ClipboardItem && navigator.clipboard?.write) copyBtn.addEventListener('click', copyImage);
   else copyBtn.hidden = true;
