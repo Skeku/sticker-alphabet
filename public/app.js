@@ -161,17 +161,46 @@ function drawBackground(W, H) {
   ctx.restore();
 }
 
-function drawSticker(img, cx, cy, w, h, rot, unit) {
+let glossCanvas = null;
+
+// Vinyl sheen: a diagonal highlight band masked to the sticker's alpha.
+// The gradient is counter-rotated so the light stays fixed top-left in world space.
+function glossLayer(img, w, h, rot) {
+  const cw = Math.ceil(w), ch = Math.ceil(h);
+  glossCanvas = glossCanvas || document.createElement('canvas');
+  glossCanvas.width = cw;
+  glossCanvas.height = ch;
+  const g = glossCanvas.getContext('2d');
+  g.drawImage(img, 0, 0, cw, ch);
+  g.globalCompositeOperation = 'source-in';
+
+  const r = Math.hypot(cw, ch) / 2;
+  const a = Math.PI / 4 - rot; // world light direction (top-left → bottom-right), in local space
+  const dx = Math.cos(a) * r, dy = Math.sin(a) * r;
+  const grad = g.createLinearGradient(cw / 2 - dx, ch / 2 - dy, cw / 2 + dx, ch / 2 + dy);
+  grad.addColorStop(0, 'rgba(255,255,255,0.10)');
+  grad.addColorStop(0.3, 'rgba(255,255,255,0.26)');
+  grad.addColorStop(0.42, 'rgba(255,255,255,0.03)');
+  grad.addColorStop(0.7, 'rgba(255,255,255,0)');
+  grad.addColorStop(1, 'rgba(0,0,0,0.10)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, cw, ch);
+  return glossCanvas;
+}
+
+// lift: 0 = flat on the surface, 1 = top of the pile. Higher stickers cast longer, softer shadows.
+function drawSticker(img, cx, cy, w, h, rot, unit, lift) {
   const shadowRgb = SURFACES[state.surface].shadow;
   ctx.save();
   ctx.translate(cx, cy);
   ctx.rotate(rot);
 
   // Ambient shadow: wide and soft, falls down-right away from the key light.
-  ctx.shadowColor = `rgba(${shadowRgb}, 0.22)`;
-  ctx.shadowBlur = unit * 0.06;
-  ctx.shadowOffsetX = unit * 0.012;
-  ctx.shadowOffsetY = unit * 0.03;
+  // Shadow offsets are in device space, so rotation doesn't swing the light.
+  ctx.shadowColor = `rgba(${shadowRgb}, ${0.16 + 0.12 * lift})`;
+  ctx.shadowBlur = unit * (0.035 + 0.07 * lift);
+  ctx.shadowOffsetX = unit * (0.006 + 0.018 * lift);
+  ctx.shadowOffsetY = unit * (0.016 + 0.04 * lift);
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
 
   // Contact shadow: tight, where the vinyl touches the surface.
@@ -180,6 +209,9 @@ function drawSticker(img, cx, cy, w, h, rot, unit) {
   ctx.shadowOffsetX = unit * 0.002;
   ctx.shadowOffsetY = unit * 0.006;
   ctx.drawImage(img, -w / 2, -h / 2, w, h);
+
+  ctx.shadowColor = 'transparent';
+  ctx.drawImage(glossLayer(img, w, h, rot), -w / 2, -h / 2, w, h);
 
   ctx.restore();
 }
@@ -261,10 +293,11 @@ async function render() {
   });
 
   drawList.sort((a, b) => a.it.z - b.it.z);
-  for (const d of drawList) {
+  const last = Math.max(1, drawList.length - 1);
+  for (const [i, d] of drawList.entries()) {
     const img = await loadImage(stickerSrc(d.it.letter, d.it.variant));
     if (token !== renderToken) return;
-    if (img) drawSticker(img, d.cx, d.cy, d.w, d.h, d.it.rot, unit);
+    if (img) drawSticker(img, d.cx, d.cy, d.w, d.h, d.it.rot, unit, i / last);
   }
 
   // Unifying light pass so all stickers share the same illumination.
