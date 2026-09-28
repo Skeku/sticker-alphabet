@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sticker Alphabet</title>
+  <meta name="description" content="Type a word, get it spelled out in fruit stickers. Download it and share it.">
+  <meta property="og:title" content="Sticker Alphabet">
+  <meta property="og:description" content="Type a word, get it spelled out in fruit stickers.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><ellipse cx='32' cy='34' rx='26' ry='22' fill='%23f2c230' stroke='%23161616' stroke-width='5'/><text x='32' y='44' font-family='Arial Black,Arial' font-weight='900' font-size='28' text-anchor='middle' fill='%23161616'>A</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">#26</span>
+      <h1>Sticker Alphabet</h1>
+    </div>
+    <p class="tag">Fresh letters, hand picked. Type anything.</p>
+  </header>
+
+  <main class="stage-wrap">
+    <div class="stage" id="stage">
+      <canvas id="canvas" aria-label="Your word spelled with fruit stickers" role="img"></canvas>
+      <div class="loading" id="loading" hidden>Peeling stickers…</div>
+    </div>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <label class="field">
+        <span class="field-label">Your word</span>
+        <input id="text" name="text" type="text" maxlength="40" value="FRESH" spellcheck="false" autocapitalize="characters">
+        <span class="field-hint">A–Z and spaces. Use / for a new line.</span>
+      </label>
+
+      <div class="row">
+        <div class="group" role="radiogroup" aria-label="Format">
+          <span class="group-label">Format</span>
+          <button type="button" class="chip is-on" data-format="square">1:1</button>
+          <button type="button" class="chip" data-format="wide">16:9</button>
+        </div>
+        <div class="group" role="radiogroup" aria-label="Surface">
+          <span class="group-label">Surface</span>
+          <button type="button" class="swatch is-on" data-bg="paper" style="--sw:#ecebe7" aria-label="Paper"></button>
+          <button type="button" class="swatch" data-bg="kraft" style="--sw:#c9a77c" aria-label="Kraft"></button>
+          <button type="button" class="swatch" data-bg="mint" style="--sw:#cfe3d6" aria-label="Mint"></button>
+          <button type="button" class="swatch" data-bg="ink" style="--sw:#1d1d1f" aria-label="Ink"></button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" class="btn" id="shuffle">Shuffle stickers</button>
+        <button type="button" class="btn btn-primary" id="download">Download PNG</button>
+        <button type="button" class="btn" id="share">Share</button>
+      </div>
+    </form>
+  </main>
+
+  <footer class="foot">
+    <span>Stickers generated with AI. Brands and PLU codes on them are made up.</span>
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

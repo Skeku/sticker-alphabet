@@ -1,0 +1,11 @@
+{
+  "name": "sticker-alphabet",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/fetch-stickers.mjs"
+  },
+  "dependencies": {
+    "sharp": "^0.33.5"
+  }
+}
