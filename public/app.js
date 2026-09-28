@@ -11,7 +11,7 @@ const SURFACES = {
   ink: { base: '#1d1d1f', shadow: '0, 0, 0' },
 };
 const LAYOUT = {
-  overlap: 0.84,       // advance = sticker width * overlap
+  overlap: 0.9,        // advance = sticker width * overlap
   spaceWidth: 0.42,    // word gap, in letter-height units
   lineGap: 0.12,       // extra gap between lines, in letter-height units
   padding: 0.1,        // canvas padding, fraction of the shortest side
