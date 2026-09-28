@@ -1,3 +1,5 @@
 node_modules/
 .netlify/
 HANDOFF.md
+.DS_Store
+sticker-alphabet.zip
